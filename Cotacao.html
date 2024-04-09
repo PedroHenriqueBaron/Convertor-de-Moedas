@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertor de Moedas</title>
+</head>
+
+<body>
+
+    <label title="Sigla da Moeda">Sigla da Moeda</label>
+    <input type="text" name="numero_cep" id="numero_cep" />
+
+    <input type="button" value="Pesquisar" onclick="chamarServicoViaCEP()" />
+</body>
+<div id="currencyData"></div>
+<p>USD-BRL,EUR-BRL,BTC-BRL</p>
+</html>
+
+<script>
+    //     const cnpj = '12345678901234'; // CNPJ desejado
+    // fetch('https://cors-anywhere.herokuapp.com/https://receitaws.com.br/v1/cnpj/' + cnpj)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         console.log(data); // Dados do CNPJ
+    //     })
+    //     .catch(error => {
+    //         console.error('Erro ao fazer a requisição:', error);
+    //     });
+
+
+    function chamarServicoViaCEP() {
+
+        cep_digitado = document.getElementById("numero_cep").value;
+
+
+        if (cep_digitado == "") {
+            alert("Informe a Sigla da Moeda");
+            return;
+        }
+
+
+        const urlViaCEP = "https://economia.awesomeapi.com.br/json/last/" + cep_digitado;
+
+        fetch(urlViaCEP)
+
+            .then((response) => {
+
+                if (response.ok) {
+                    alert("Resposta OK");
+
+                    return response.json();
+                }
+
+                if (!response.OK) {
+                    alert("Resposta não OK");
+                }
+
+
+            })
+
+            .then((data) => {
+
+                alert(JSON.stringify(data));
+                // const data = {
+                //     "USDBRL": {
+                //         "code": "USD",
+                //         "codein": "BRL",
+                //         "name": "Dólar Americano/Real Brasileiro",
+                //         "high": "5.0309",
+                //         "low": "5.0072",
+                //         "varBid": "-0.0169",
+                //         "pctChange": "-0.34",
+                //         "bid": "5.0096",
+                //         "ask": "5.0101",
+                //         "timestamp": "1712667421",
+                //         "create_date": "2024-04-09 09:57:01"
+                //     }
+                // };
+
+                for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        const currencyData = data[key];
+                        console.log(`Código: ${currencyData.code}`);
+                        console.log(`Código de entrada: ${currencyData.codein}`);
+                        console.log(`Nome: ${currencyData.name}`);
+                        console.log(`Alta: ${currencyData.high}`);
+                        console.log(`Baixa: ${currencyData.low}`);
+                        console.log(`Variação do Bid: ${currencyData.varBid}`);
+                        console.log(`Variação percentual: ${currencyData.pctChange}%`);
+                        console.log(`Bid: ${currencyData.bid}`);
+                        console.log(`Ask: ${currencyData.ask}`);
+                        console.log(`Timestamp: ${currencyData.timestamp}`);
+                        console.log(`Data de criação: ${currencyData.create_date}`);
+
+                    }
+                }
+                const currencyDiv = document.getElementById("currencyData");
+
+                for (const key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        const currencyData = data[key];
+                        const currencyElement = document.createElement("div");
+
+                        currencyElement.innerHTML = `
+                            <p>Código: ${currencyData.code}</p>
+                            <p>Código de entrada: ${currencyData.codein}</p>
+                            <p>Nome: ${currencyData.name}</p>
+                            <p>Alta: ${currencyData.high}</p>
+                            <p>Baixa: ${currencyData.low}</p>
+                            <p>Variação do Bid: ${currencyData.varBid}</p>
+                            <p>Variação percentual: ${currencyData.pctChange}%</p>
+                            <p>Bid: ${currencyData.bid}</p>
+                            <p>Ask: ${currencyData.ask}</p>
+                            <p>Timestamp: ${currencyData.timestamp}</p>
+                            <p>Data de criação: ${currencyData.create_date}</p>
+                            `;
+                        currencyDiv.appendChild(currencyElement);
+                    }
+                }
+
+
+                /*
+                atividades_secundarias": [
+            {
+              "code": "string",
+              "text": "string"
+            }
+          ]
+
+            data.atividades_secundarias[0].text
+                */
+
+            })
+
+            .catch(error => {
+
+                alert("Erro ao requisitar o serviço na nuvem!");
+
+                console.error("Erro ao requisitar o serviço na nuvem!");
+            });
+
+
+
+    }
+</script>
